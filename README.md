@@ -1,5 +1,7 @@
 # Root Method 3D Model Demo
 
+This demo is associated with the Root Methods PhD course held at Aarhus University, Viborg (AU Viborg), from 18–22 May 2026. Related course material is available on [Zenodo](https://zenodo.org/records/20542454).
+
 ## Root Model Composition
 
 The model does not directly classify CSV rows as central roots, lateral roots, dicot roots, or monocot roots. Instead, it uses the CSV measurements to procedurally generate a root system from sample-level summaries and depth-level segments.
