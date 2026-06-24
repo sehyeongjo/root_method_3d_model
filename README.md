@@ -35,6 +35,26 @@ This code applies visual and structural limitations to maintain a basic root-sys
    - how thick they are
    - how many fine roots are attached
 
+## Minimal Version
+
+The [`minimal-version`](./minimal-version/) folder contains a separate reduced-parameter estimated root model. The main demo is also CSV/data driven; the difference is that the minimal version uses a smaller subset of the cleaned Rhizovision CSV variables and does not use the workbook biomass values or the larger `root-visual-parameters.js` visual-parameter system.
+
+- [`minimal-version/index.html`](./minimal-version/index.html) opens the minimal version page.
+- [`minimal-version/app.js`](./minimal-version/app.js) loads `clean roots rhizovision output.csv`, groups rows by treatment and plot, and builds one estimated root system for each selected sample.
+- [`minimal-version/parameters.js`](./minimal-version/parameters.js) contains the minimal version's visual translation parameters, including gravity-driven branch sag.
+- [`minimal-version/styles.css`](./minimal-version/styles.css) contains the layout and responsive styling for the minimal version.
+
+The minimal version should be read as an estimated/procedural root architecture, not as a reconstruction of the exact scanned root topology. It is meant to show how much root-like structure can be generated when the parameter set is reduced, while still using CSV summary measurements.
+
+The main inputs are:
+
+- depth information from `depth_interval_cm` and `avg_depth_cm`
+- root quantity from `Total.Root.Length.mm` and `RLDcm/cm3`
+- branching signal from `Number.of.Root.Tips`, `Number.of.Branch.Points`, and `Branching.frequency.per.mm`
+- diameter structure from `Average.Diameter.mm`, `Median.Diameter.mm`, `Maximum.Diameter.mm`, and `Root.Length.Diameter.Range.*.mm`
+- size/complexity cues from `Network.Area.mm2`, `Surface.Area.mm2`, and `Volume.mm3`
+
+The minimal version translates these values into a central root, basal roots, depth-based lateral branches, and fine roots. Its parameters control the visual translation from CSV summary statistics into a plausible root form; they do not add measured topology that is absent from the CSV. The gravity parameters make longer, deeper, finer branches sag more strongly, which gives the estimated architecture a more physical downward tendency without changing the underlying data.
 
 ## Third-Party Open Source Software
 
