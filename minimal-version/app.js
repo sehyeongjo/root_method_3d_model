@@ -277,6 +277,7 @@ function createViewer(container, sample, ranges, index) {
 
   const root = buildEstimatedRoot(sample, ranges, index);
   scene.add(root);
+  scene.add(buildDepthAxis(root, sample.totals.maxDepthCm));
 
   const controls = createControls(container, root, camera);
   const resizeObserver = new ResizeObserver(() => resizeRenderer(container, renderer, camera));
@@ -289,13 +290,12 @@ function createViewer(container, sample, ranges, index) {
 function buildEstimatedRoot(sample, ranges, index) {
   const rng = mulberry32(hashString(sample.key));
   const shape = createSampleShape(sample, ranges);
-  const palette = treatmentPalette(sample.treatmentId);
+  const palette = treatmentPalette();
   const root = new THREE.Group();
   const centralPoints = createCentralRootPoints(shape, rng);
   const fineRootPositions = [];
 
   root.rotation.y = index * 0.23 + rng() * 0.42;
-  addDepthAxis(root, shape);
   addRootCrown(root, centralPoints[0], shape, palette);
   addCentralRoot(root, centralPoints, shape, palette);
   addBasalRoots(root, centralPoints, shape, ranges, rng, palette);
@@ -616,32 +616,43 @@ function sampleDiameterFromProfile(profile, typicalDiameterMm, medianDiameterMm,
   return THREE.MathUtils.lerp(typicalDiameterMm, medianDiameterMm, rng());
 }
 
-function addDepthAxis(root, shape) {
+function buildDepthAxis(root, maxDepthCm) {
+  const box = new THREE.Box3().setFromObject(root);
+  const top = box.max.y;
+  const bottom = box.min.y;
+  const axisMax = Math.max(
+    MINIMAL_VERSION_PARAMETERS.scene.depthRoundStepCm,
+    Math.ceil(maxDepthCm / MINIMAL_VERSION_PARAMETERS.scene.depthRoundStepCm) *
+      MINIMAL_VERSION_PARAMETERS.scene.depthRoundStepCm,
+  );
   const axisX = -1.48;
+  const group = new THREE.Group();
   const material = new THREE.LineBasicMaterial({
     color: 0x52615d,
     transparent: true,
     opacity: 0.45,
   });
   const geometry = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(axisX, shape.top, 0),
-    new THREE.Vector3(axisX, shape.bottom, 0),
+    new THREE.Vector3(axisX, top, 0),
+    new THREE.Vector3(axisX, bottom, 0),
   ]);
-  root.add(new THREE.Line(geometry, material));
+  group.add(new THREE.Line(geometry, material));
 
-  const tickStep = shape.depthScaleMaxCm > 120 ? 50 : 20;
-  for (let depth = 0; depth <= shape.depthScaleMaxCm; depth += tickStep) {
-    const y = THREE.MathUtils.lerp(shape.top, shape.bottom, depth / shape.depthScaleMaxCm);
+  const tickStep = axisMax > 120 ? 50 : 20;
+  for (let depth = 0; depth <= axisMax; depth += tickStep) {
+    const y = THREE.MathUtils.lerp(top, bottom, depth / axisMax);
     const tickGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(axisX, y, 0),
       new THREE.Vector3(axisX + 0.1, y, 0),
     ]);
-    root.add(new THREE.Line(tickGeometry, material));
+    group.add(new THREE.Line(tickGeometry, material));
 
     const label = makeTextSprite(String(depth));
     label.position.set(axisX - 0.15, y, 0);
-    root.add(label);
+    group.add(label);
   }
+
+  return group;
 }
 
 function makeTextSprite(text) {
@@ -743,21 +754,12 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-function treatmentPalette(treatmentId) {
-  if (treatmentId === "1") {
-    return {
-      main: 0x255f4d,
-      lateral: 0x447b68,
-      fine: 0x86a99b,
-      crown: 0x405f4a,
-    };
-  }
-
+function treatmentPalette() {
   return {
-    main: 0x245f84,
-    lateral: 0x4d82a3,
-    fine: 0x89adbf,
-    crown: 0x3d5f72,
+    main: 0x74624e,
+    lateral: 0x74624e,
+    fine: 0xa4967b,
+    crown: 0x596154,
   };
 }
 
