@@ -2,6 +2,17 @@
 
 This demo is associated with the Root Methods PhD course held at Aarhus University, Viborg (AU Viborg), from 18–22 May 2026. Related course material is available on [Zenodo](https://zenodo.org/records/20542454).
 
+<p align="center">
+   <img width="320" height="406" alt="Image" src="https://github.com/user-attachments/assets/c4c06916-b690-43a9-b663-2659c3cb9af7" />
+
+   <img width="320" height="406" alt="Image" src="https://github.com/user-attachments/assets/ad307acf-85fd-4504-8acb-75a2ee634658" />
+</p>
+
+The treatment IDs represent the following plant groups:
+
+- **Treatment 1:** Monocot
+- **Treatment 2:** Dicot
+
 ## Root Model Composition
 
 The model does not directly classify CSV rows as central roots, lateral roots, dicot roots, or monocot roots. Instead, it uses the CSV measurements to procedurally generate a root system from sample-level summaries and depth-level segments.
