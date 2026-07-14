@@ -27,8 +27,6 @@ Move into the folder that contains `index.html`, `app.js`, and the data files. R
 cd path/to/root_method_3d_model
 ```
 
-Tip: on macOS, you can type `cd ` in Terminal, drag the project folder from Finder into the Terminal window, and press Enter.
-
 ## 3. Start a Local Node Server
 
 Run a static file server with `npx`:
